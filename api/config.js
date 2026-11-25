@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-    // BUKA AKSES CORS (BIAR AMAN)
     res.setHeader("Access-Control-Allow-Origin", "*"); 
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -14,7 +13,8 @@ export default async function handler(req, res) {
     const headers = {
         "apikey": SUPABASE_KEY,
         "Authorization": `Bearer ${SUPABASE_KEY}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Prefer": "return=representation" // Biar dapet balikan data yang di-update
     };
 
     if (req.method === "GET") {
@@ -54,16 +54,34 @@ export default async function handler(req, res) {
 
     if (req.method === "POST") {
         try {
-            const r = await fetch(`${SUPABASE_URL}/rest/v1/web_config?id=eq.1`, {
-                method: "PATCH",
-                headers,
-                body: JSON.stringify({
-                    email_tujuan: req.body.email_tujuan,
-                    banner_url: req.body.banner_url,
-                    footer_text: req.body.footer_text,
-                    nama_ress: req.body.nama_ress
-                })
-            });
+            // Cek dulu datanya ada atau ngga
+            const check = await fetch(`${SUPABASE_URL}/rest/v1/web_config?id=eq.1`, { headers });
+            const checkData = await check.json();
+
+            const payload = {
+                email_tujuan: req.body.email_tujuan,
+                banner_url: req.body.banner_url,
+                footer_text: req.body.footer_text,
+                nama_ress: req.body.nama_ress
+            };
+
+            let r;
+            if (checkData && checkData.length > 0) {
+                // Kalo ada, update (PATCH)
+                r = await fetch(`${SUPABASE_URL}/rest/v1/web_config?id=eq.1`, {
+                    method: "PATCH",
+                    headers,
+                    body: JSON.stringify(payload)
+                });
+            } else {
+                // Kalo belum ada, bikin baru (POST)
+                r = await fetch(`${SUPABASE_URL}/rest/v1/web_config`, {
+                    method: "POST",
+                    headers,
+                    body: JSON.stringify({ id: 1, ...payload })
+                });
+            }
+
             if (!r.ok) throw new Error(await r.text());
             return res.status(200).json({ success: true, message: "SETTING BERHASIL DISIMPAN!" });
         } catch (e) { return res.status(500).json({ error: e.message }); }
