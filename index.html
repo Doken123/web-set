@@ -265,8 +265,7 @@
 <div id="toast">SETTING TERSIMPAN!</div>
 
 <script>
-// KOSONGIN AJA, KARENA API-NYA SEKARANG ADA DI DOMAIN SENDIRI
-const API_URL = ""; 
+const API_URL = ""; // Kosongin aja, karena API ada di folder yang sama
 
 function showToast(msg, bgColor = "#16a34a") {
     const t = document.getElementById('toast');
@@ -283,13 +282,22 @@ function randomEmail() {
 
 async function loadData() {
     try {
-        const res = await fetch('/api/config'); // UDAH GA PAKE API_URL
+        const res = await fetch('/api/config'); // Pake relative path
         const data = await res.json();
         
         if(data.email_tujuan) document.getElementById('emailTujuan').value = data.email_tujuan;
-        if(data.nama_ress) document.getElementById('namaRess1').value = data.nama_ress;
         if(data.footer_text) document.getElementById('footerText').value = data.footer_text;
         
+        // BENERIN NAMA RESS YANG ADA <>
+        if(data.nama_ress) {
+            let parts = data.nama_ress.split(' <');
+            document.getElementById('namaRess1').value = parts[0] || 'RESS KENZO';
+            if(parts[1]) {
+                document.getElementById('namaRess2').value = parts[1].replace('>', '') || 'app_xxx@4vt6.me';
+            }
+        }
+        
+        // Isi Statistik
         if(data.stat_hari_ini !== undefined) document.getElementById('statHariIni').innerText = data.stat_hari_ini;
         if(data.stat_kemarin !== undefined) document.getElementById('statKemarin').innerText = data.stat_kemarin;
         if(data.stat_total !== undefined) document.getElementById('statTotal').innerText = data.stat_total;
@@ -314,7 +322,7 @@ document.getElementById('btnSimpan').addEventListener('click', async function() 
     };
 
     try {
-        const res = await fetch('/api/config', { // UDAH GA PAKE API_URL
+        const res = await fetch('/api/config', { // Pake relative path
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
