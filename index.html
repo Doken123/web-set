@@ -158,11 +158,6 @@
     color:var(--navy);
     outline:none;
   }
-  .input[readonly] {
-    background-color: #f4f6fb;
-    color: #888;
-    cursor: not-allowed;
-  }
   .input:focus{border-color:var(--blue)}
   .group{margin-bottom:18px}
   .row{display:flex;gap:11px}
@@ -244,13 +239,13 @@
       <input type="email" class="input" id="emailTujuan" placeholder="admin@domain.com">
     </div>
 
+    <!-- NAMA RESS UDAH BISA DIEDIT LAGI -->
     <div class="group">
       <label class="field-label">Nama Ress</label>
       <div class="row">
-        <!-- NAMA RESS DIREADONLY -->
-        <input type="text" class="input" id="namaRess1" value="RESS KENZO" readonly>
+        <input type="text" class="input" id="namaRess1" placeholder="BOYZ NEBAR ESPORT">
         <div class="with-btn">
-          <input type="text" class="input" id="namaRess2" value="app_xjlw@4vt6.me" readonly>
+          <input type="text" class="input" id="namaRess2" placeholder="app_xxx@4vt6.me">
           <button type="button" class="btn-refresh" onclick="randomEmail()"><i class="fa-solid fa-rotate"></i></button>
         </div>
       </div>
@@ -259,9 +254,9 @@
     <div class="group" style="margin-bottom:0">
       <label class="field-label">Banner URL &amp; Footer Text</label>
       <div class="row">
-        <!-- TULISAN ATAS.JPG UDAH GUA HAPUS, JADI KOSONG -->
+        <!-- TULISAN ATAS.JPG UDAH DIHAPUS -->
         <input type="text" class="input" id="bannerUrl" placeholder="Isi URL Banner">
-        <!-- FOOTER TEXT DIREADONLY -->
+        <!-- FOOTER TEXT TETEP READONLY -->
         <input type="text" class="input" id="footerText" value="Web Kenz" readonly>
       </div>
     </div>
@@ -299,14 +294,6 @@ async function loadData() {
         if(data.email_tujuan) document.getElementById('emailTujuan').value = data.email_tujuan;
         if(data.nama_ress) document.getElementById('namaRess1').value = data.nama_ress;
         if(data.footer_text) document.getElementById('footerText').value = data.footer_text;
-
-        // Kalo di database masih nyimpen "atas.jpg", biarin aja ga usah ditampilin di form
-        // Tapi kalo lu mau nampilin banner dari database (misal link imgur), hapus comment di bawah
-        /*
-        if(data.banner_url) {
-            document.getElementById('bannerUrl').value = data.banner_url;
-        }
-        */
 
         // Isi Statistik
         if(data.stat_hari_ini !== undefined) document.getElementById('statHariIni').innerText = data.stat_hari_ini;
