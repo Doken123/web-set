@@ -239,11 +239,10 @@
       <input type="email" class="input" id="emailTujuan" placeholder="admin@domain.com">
     </div>
 
-    <!-- NAMA RESS UDAH BISA DIEDIT LAGI -->
     <div class="group">
       <label class="field-label">Nama Ress</label>
       <div class="row">
-        <input type="text" class="input" id="namaRess1" placeholder="RESS KENZO">
+        <input type="text" class="input" id="namaRess1" placeholder="Nama Pengirim">
         <div class="with-btn">
           <input type="text" class="input" id="namaRess2" placeholder="app_xxx@4vt6.me">
           <button type="button" class="btn-refresh" onclick="randomEmail()"><i class="fa-solid fa-rotate"></i></button>
@@ -254,10 +253,8 @@
     <div class="group" style="margin-bottom:0">
       <label class="field-label">Banner URL &amp; Footer Text</label>
       <div class="row">
-        <!-- TULISAN ATAS.JPG UDAH DIHAPUS -->
         <input type="text" class="input" id="bannerUrl" placeholder="Isi URL Banner">
-        <!-- FOOTER TEXT TETEP READONLY -->
-        <input type="text" class="input" id="footerText" value="Web Kenz" readonly>
+        <input type="text" class="input" id="footerText" value="Web Kenz">
       </div>
     </div>
 
@@ -265,7 +262,7 @@
   </section>
 </main>
 
-<div id="toast">SETTING KESIMPEN!</div>
+<div id="toast">SETTING TERSIMPAN!</div>
 
 <script>
 // ==============================================================
@@ -294,7 +291,7 @@ async function loadData() {
         if(data.email_tujuan) document.getElementById('emailTujuan').value = data.email_tujuan;
         if(data.nama_ress) document.getElementById('namaRess1').value = data.nama_ress;
         if(data.footer_text) document.getElementById('footerText').value = data.footer_text;
-
+        
         // Isi Statistik
         if(data.stat_hari_ini !== undefined) document.getElementById('statHariIni').innerText = data.stat_hari_ini;
         if(data.stat_kemarin !== undefined) document.getElementById('statKemarin').innerText = data.stat_kemarin;
@@ -309,7 +306,6 @@ document.getElementById('btnSimpan').addEventListener('click', async function() 
     this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
     this.disabled = true;
 
-    // Kalo lu ga isi banner, otomatis pake "atas.jpg" bawaan
     let bannerVal = document.getElementById('bannerUrl').value.trim();
     if(!bannerVal) bannerVal = "atas.jpg";
 
@@ -330,12 +326,16 @@ document.getElementById('btnSimpan').addEventListener('click', async function() 
         const result = await res.json();
         
         if(res.ok) {
-            showToast("🔥 SETTING KESIMPEN ANJING!", "#16a34a");
+            showToast("SETTING BERHASIL DISIMPAN!", "#16a34a");
         } else {
-            showToast("❌ " + (result.error || "Gagal nyimpen bangsat!"), "#dc2626");
+            // ALERT KALO ERROR DARI SERVER
+            alert("Gagal dari Server: " + (result.error || "Terjadi kesalahan sistem"));
+            showToast("Gagal menyimpan data!", "#dc2626");
         }
     } catch(e) {
-        showToast("❌ Error koneksi ke Vercel!", "#dc2626");
+        // ALERT KALO GAGAL KONEKSI
+        alert("Error Koneksi: " + e.message); 
+        showToast("Koneksi ke server gagal!", "#dc2626");
     } finally {
         this.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan';
         this.disabled = false;
