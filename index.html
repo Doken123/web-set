@@ -2,290 +2,68 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Login</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Webset</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg-1:#c4d4e6;
-    --bg-2:#9fb4cf;
-    --ink:#1d2b3a;
-    --muted:#5f7084;
-    --blue:#3f6fb0;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-
-  body{
-    font-family:'Inter',sans-serif;
-    min-height:100vh;
-    color:var(--ink);
-    background:linear-gradient(165deg,var(--bg-1),var(--bg-2) 80%);
-    overflow-x:hidden;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:24px 16px;
-  }
-
-  .blob{
-    position:fixed;
-    border-radius:50%;
-    filter:blur(60px);
-    z-index:0;
-    pointer-events:none;
-  }
-  .b1{width:300px;height:300px;top:-90px;left:-70px;background:#eaf2fb;opacity:.55}
-  .b2{width:320px;height:320px;top:120px;right:-110px;background:#b7cbe4;opacity:.5}
-  .b3{width:260px;height:260px;bottom:0;left:-40px;background:#dfe9f6;opacity:.45}
-
-  .wrap{position:relative;z-index:1;width:100%;max-width:400px}
-
-  .brand{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:12px;
-    margin-bottom:26px;
-  }
-  .mark{
-    width:56px;height:56px;
-    border-radius:18px;
-    display:flex;align-items:center;justify-content:center;
-    color:var(--ink);
-    font-size:22px;
-  }
-  .brand h1{
-    font-family:'Outfit',sans-serif;
-    font-size:21px;
-    font-weight:600;
-    color:var(--ink);
-  }
-  .brand p{
-    font-size:13px;
-    color:var(--muted);
-    margin-top:-6px;
-  }
-
-  /* ============ TRUE LIQUID GLASS, with real depth ============ */
-  .glass{
-    position:relative;
-    border-radius:26px;
-    background:rgba(255,255,255,.05);
-    backdrop-filter:blur(10px) saturate(160%);
-    -webkit-backdrop-filter:blur(10px) saturate(160%);
-    border:1px solid rgba(255,255,255,.28);
-    overflow:hidden;
-    box-shadow:
-      0 1px 0 rgba(255,255,255,.55) inset,
-      0 -14px 20px rgba(20,35,55,.07) inset,
-      0 24px 40px rgba(20,35,55,.22),
-      0 6px 10px rgba(20,35,55,.12);
-  }
-  .glass::before{
-    content:"";
-    position:absolute;
-    top:-40%;left:-20%;
-    width:85%;height:70%;
-    background:linear-gradient(135deg,rgba(255,255,255,.4),rgba(255,255,255,.05) 55%,transparent 70%);
-    transform:rotate(-8deg);
-    pointer-events:none;
-  }
-  .glass::after{
-    content:"";
-    position:absolute;
-    top:0;left:8%;right:8%;
-    height:1px;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);
-  }
-  .glass > *{position:relative;z-index:1}
-
-  .mark{
-    background:rgba(255,255,255,.06);
-    backdrop-filter:blur(8px) saturate(160%);
-    -webkit-backdrop-filter:blur(8px) saturate(160%);
-    border:1px solid rgba(255,255,255,.32);
-    box-shadow:0 1px 0 rgba(255,255,255,.55) inset, 0 8px 16px rgba(20,35,55,.18);
-  }
-
-  .card{padding:30px 22px 26px}
-
-  .field-label{
-    display:block;
-    font-size:12.5px;
-    color:var(--muted);
-    margin-bottom:8px;
-  }
-  .group{margin-bottom:18px}
-
-  .input-wrap{position:relative}
-  .input-wrap i.leading{
-    position:absolute;
-    left:14px;top:50%;
-    transform:translateY(-50%);
-    color:var(--muted);
-    font-size:14px;
-    pointer-events:none;
-  }
-  .input-wrap .input{padding-left:40px}
-
-  .input{
-    width:100%;
-    height:46px;
-    border-radius:14px;
-    border:1px solid rgba(255,255,255,.3);
-    background:rgba(255,255,255,.06);
-    backdrop-filter:blur(8px);
-    box-shadow:0 1px 0 rgba(255,255,255,.45) inset, 0 4px 10px rgba(20,35,55,.1);
-    padding:0 13px;
-    font-family:inherit;
-    font-size:15px;
-    font-weight:500;
-    color:var(--ink);
-    outline:none;
-    transition:box-shadow .2s, border-color .2s;
-  }
-  .input::placeholder{color:#7f8fa2}
-  .input:focus{
-    border-color:rgba(63,111,176,.55);
-    box-shadow:0 0 0 4px rgba(63,111,176,.15), 0 1px 0 rgba(255,255,255,.45) inset;
-  }
-
-  .toggle-pass{
-    position:absolute;
-    right:5px;top:5px;
-    width:36px;height:36px;
-    border-radius:10px;
-    border:none;
-    background:transparent;
-    color:var(--muted);
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;
-    font-size:14px;
-  }
-  .toggle-pass:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-
-  .remember{
-    display:flex;
-    align-items:center;
-    gap:7px;
-    color:var(--muted);
-    font-size:13px;
-    margin-bottom:22px;
-  }
-  .remember input{accent-color:var(--blue)}
-
-  .btn-login{
-    width:100%;
-    border:1px solid rgba(255,255,255,.4);
-    border-radius:999px;
-    background:rgba(63,111,176,.3);
-    backdrop-filter:blur(10px);
-    color:#fff;
-    font-family:'Outfit',sans-serif;
-    font-weight:600;
-    font-size:15px;
-    height:48px;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:9px;
-    cursor:pointer;
-    box-shadow:0 1px 0 rgba(255,255,255,.45) inset, 0 14px 28px rgba(30,50,75,.3);
-  }
-  .btn-login:active{transform:scale(.97)}
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
+    body { background: #1d2b3a; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #fff; }
+    .login-box { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 350px; text-align: center; }
+    h2 { margin-bottom: 20px; font-weight: 600; }
+    .input { width: 100%; padding: 12px 15px; margin-bottom: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: #fff; outline: none; font-size: 15px; }
+    .input:focus { border-color: #3f6fb0; }
+    .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; background: #3f6fb0; color: #fff; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.2s; }
+    .btn:active { transform: scale(0.98); }
+    #error { color: #ff6b6b; font-size: 13px; margin-bottom: 10px; display: none; }
 </style>
 </head>
 <body>
 
-<div class="blob b1"></div>
-<div class="blob b2"></div>
-<div class="blob b3"></div>
-
-<div class="wrap">
-  <div class="brand">
-    <div class="mark glass"><i class="fa-solid fa-paper-plane"></i></div>
-    <h1>Web Setting</h1>
-    <p>Masuk untuk melanjutkan</p>
-  </div>
-
-  <section class="glass card">
-    <div class="group">
-      <label class="field-label">Username</label>
-      <div class="input-wrap">
-        <i class="fa-solid fa-user leading"></i>
-        <input type="text" class="input" id="loginUsername" placeholder="username">
-      </div>
-    </div>
-
-    <div class="group">
-      <label class="field-label">Password</label>
-      <div class="input-wrap">
-        <i class="fa-solid fa-lock leading"></i>
-        <input type="password" class="input" id="loginPassword" placeholder="••••••••">
-        <button type="button" class="toggle-pass" id="togglePass"><i class="fa-solid fa-eye"></i></button>
-      </div>
-    </div>
-
-    <label class="remember">
-      <input type="checkbox">
-      Ingat saya
-    </label>
-
-    <button type="button" class="btn-login" id="btnLogin"><i class="fa-solid fa-right-to-bracket"></i> Masuk</button>
-  </section>
+<div class="login-box">
+    <h2>Login Webset</h2>
+    <div id="error">Username atau password salah!</div>
+    <input type="text" id="username" class="input" placeholder="Username">
+    <input type="password" id="password" class="input" placeholder="Password">
+    <button class="btn" onclick="loginWebset()">Masuk</button>
 </div>
 
 <script>
-  // Cek session, kalo udah login lempar ke dashboard
-  if(localStorage.getItem('web_session')) {
-      window.location.href = '/dashboard.html';
-  }
+    async function loginWebset() {
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+        const errorDiv = document.getElementById('error');
+        
+        errorDiv.style.display = 'none';
 
-  const toggleBtn = document.getElementById('togglePass');
-  const passInput = document.getElementById('loginPassword');
-  toggleBtn.addEventListener('click', () => {
-    const isHidden = passInput.type === 'password';
-    passInput.type = isHidden ? 'text' : 'password';
-    toggleBtn.innerHTML = isHidden
-      ? '<i class="fa-solid fa-eye-slash"></i>'
-      : '<i class="fa-solid fa-eye"></i>';
-  });
-
-  // LOGIKA LOGIN
-  document.getElementById('btnLogin').addEventListener('click', async function() {
-    const user = document.getElementById('loginUsername').value;
-    const pass = document.getElementById('loginPassword').value;
-    const btn = this;
-
-    if(!user || !pass) return alert("Harap isi Username dan Password!");
-
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
-    btn.disabled = true;
-
-    try {
-        const res = await fetch('/api/auth', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: user, password: pass })
-        });
-        const data = await res.json();
-
-        if(res.ok) {
-            localStorage.setItem('web_session', data.web_id); // Simpen web_id
-            window.location.href = '/dashboard.html';
-        } else {
-            alert(data.error || "Login Gagal! Periksa kembali Username dan Password.");
+        if(!user || !pass) {
+            errorDiv.innerText = "Isi username dan password!";
+            errorDiv.style.display = 'block';
+            return;
         }
-    } catch(e) {
-        alert("Koneksi Error: " + e.message);
-    } finally {
-        btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk';
-        btn.disabled = false;
-    }
-  });
-</script>
 
+        try {
+            const res = await fetch('/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            });
+            
+            const data = await res.json();
+            
+            if (data.success) {
+                // SIMPEN WEB_ID SAMA USERNAME KE LOCAL STORAGE
+                localStorage.setItem('web_session', data.web_id);
+                localStorage.setItem('admin_user', data.username);
+                window.location.href = '/dashboard.html';
+            } else {
+                errorDiv.innerText = data.error;
+                errorDiv.style.display = 'block';
+            }
+        } catch (e) {
+            errorDiv.innerText = "Error Koneksi: " + e.message;
+            errorDiv.style.display = 'block';
+        }
+    }
+</script>
 </body>
 </html>
