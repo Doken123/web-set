@@ -4,34 +4,141 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login Webset</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
-    body { background: #1d2b3a; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #fff; }
-    .login-box { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 350px; text-align: center; }
-    h2 { margin-bottom: 20px; font-weight: 600; }
-    .input { width: 100%; padding: 12px 15px; margin-bottom: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: #fff; outline: none; font-size: 15px; }
-    .input:focus { border-color: #3f6fb0; }
-    .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; background: #3f6fb0; color: #fff; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.2s; }
-    .btn:active { transform: scale(0.98); }
-    #error { color: #ff6b6b; font-size: 13px; margin-bottom: 10px; display: none; }
+    :root{
+        --bg-1:#c4d4e6;
+        --bg-2:#9fb4cf;
+        --ink:#1d2b3a;
+        --muted:#5f7084;
+        --blue:#3f6fb0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { 
+        background: linear-gradient(165deg, var(--bg-1), var(--bg-2) 80%); 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        min-height: 100vh; 
+        color: var(--ink); 
+        overflow: hidden;
+    }
+    
+    /* Efek Blob Background */
+    .blob { position: fixed; border-radius: 50%; filter: blur(60px); z-index: 0; pointer-events: none; }
+    .b1 { width: 300px; height: 300px; top: -90px; left: -70px; background: #eaf2fb; opacity: .55; }
+    .b2 { width: 320px; height: 320px; top: 120px; right: -110px; background: #b7cbe4; opacity: .5; }
+    .b3 { width: 260px; height: 260px; bottom: 0; left: -40px; background: #dfe9f6; opacity: .45; }
+
+    /* Card Glassmorphism */
+    .login-box { 
+        position: relative; 
+        z-index: 1; 
+        background: rgba(255,255,255,.1); 
+        backdrop-filter: blur(10px) saturate(160%); 
+        -webkit-backdrop-filter: blur(10px) saturate(160%); 
+        border: 1px solid rgba(255,255,255,.4); 
+        padding: 40px 30px; 
+        border-radius: 26px; 
+        box-shadow: 0 1px 0 rgba(255,255,255,.55) inset, 0 24px 40px rgba(20,35,55,.22); 
+        width: 100%; 
+        max-width: 360px; 
+        text-align: center; 
+    }
+
+    .login-box h2 { 
+        font-family: 'Outfit', sans-serif; 
+        font-size: 24px; 
+        font-weight: 700; 
+        margin-bottom: 25px; 
+        color: var(--ink); 
+    }
+
+    .input-group { margin-bottom: 18px; text-align: left; }
+    .input-group label { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; display: block; font-weight: 500; }
+    .input { 
+        width: 100%; 
+        padding: 12px 15px; 
+        border-radius: 14px; 
+        border: 1px solid rgba(255,255,255,.4); 
+        background: rgba(255,255,255,.2); 
+        color: var(--ink); 
+        outline: none; 
+        font-size: 15px; 
+        font-weight: 500; 
+        transition: box-shadow .2s, border-color .2s;
+    }
+    .input::placeholder { color: #7f8fa2; }
+    .input:focus { 
+        border-color: rgba(63,111,176,.8); 
+        background: rgba(255,255,255,.4);
+        box-shadow: 0 0 0 4px rgba(63,111,176,.15); 
+    }
+
+    .btn { 
+        width: 100%; 
+        padding: 14px; 
+        border: 1px solid rgba(255,255,255,.4); 
+        border-radius: 14px; 
+        background: rgba(63,111,176,.8); 
+        backdrop-filter: blur(10px);
+        color: #fff; 
+        font-family: 'Outfit', sans-serif;
+        font-weight: 600; 
+        font-size: 16px; 
+        cursor: pointer; 
+        transition: 0.2s; 
+        margin-top: 10px;
+        box-shadow: 0 1px 0 rgba(255,255,255,.45) inset, 0 14px 28px rgba(30,50,75,.2);
+    }
+    .btn:active { transform: scale(0.97); }
+
+    #error { 
+        color: #ff6b6b; 
+        font-size: 13px; 
+        margin-bottom: 15px; 
+        display: none; 
+        background: rgba(255,0,0,0.1);
+        padding: 8px;
+        border-radius: 8px;
+    }
 </style>
 </head>
 <body>
 
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+<div class="blob b3"></div>
+
 <div class="login-box">
     <h2>Login Webset</h2>
     <div id="error">Username atau password salah!</div>
-    <input type="text" id="username" class="input" placeholder="Username">
-    <input type="password" id="password" class="input" placeholder="Password">
+    
+    <div class="input-group">
+        <label>Username</label>
+        <input type="text" id="username" class="input" placeholder="Masukkan username">
+    </div>
+    
+    <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="password" class="input" placeholder="Masukkan password">
+    </div>
+    
     <button class="btn" onclick="loginWebset()">Masuk</button>
 </div>
 
 <script>
+    // Cek kalo udah login, langsung lempar ke dashboard
+    if (localStorage.getItem('web_session')) {
+        window.location.href = '/dashboard.html';
+    }
+
     async function loginWebset() {
         const user = document.getElementById('username').value;
         const pass = document.getElementById('password').value;
         const errorDiv = document.getElementById('error');
+        const btn = document.querySelector('.btn');
         
         errorDiv.style.display = 'none';
 
@@ -40,6 +147,9 @@
             errorDiv.style.display = 'block';
             return;
         }
+
+        btn.innerText = "Memproses...";
+        btn.disabled = true;
 
         try {
             const res = await fetch('/api/auth', {
@@ -58,12 +168,21 @@
             } else {
                 errorDiv.innerText = data.error;
                 errorDiv.style.display = 'block';
+                btn.innerText = "Masuk";
+                btn.disabled = false;
             }
         } catch (e) {
             errorDiv.innerText = "Error Koneksi: " + e.message;
             errorDiv.style.display = 'block';
+            btn.innerText = "Masuk";
+            btn.disabled = false;
         }
     }
+
+    // Support tombol Enter
+    document.getElementById('password').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') { loginWebset(); }
+    });
 </script>
 </body>
 </html>
