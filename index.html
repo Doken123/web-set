@@ -233,11 +233,16 @@
       Ingat saya
     </label>
 
-    <button type="button" class="btn-login"><i class="fa-solid fa-right-to-bracket"></i> Masuk</button>
+    <button type="button" class="btn-login" id="btnLogin"><i class="fa-solid fa-right-to-bracket"></i> Masuk</button>
   </section>
 </div>
 
 <script>
+  // Cek session, kalo udah login lempar ke dashboard
+  if(localStorage.getItem('web_session')) {
+      window.location.href = '/dashboard.html';
+  }
+
   const toggleBtn = document.getElementById('togglePass');
   const passInput = document.getElementById('loginPassword');
   toggleBtn.addEventListener('click', () => {
@@ -246,6 +251,39 @@
     toggleBtn.innerHTML = isHidden
       ? '<i class="fa-solid fa-eye-slash"></i>'
       : '<i class="fa-solid fa-eye"></i>';
+  });
+
+  // LOGIKA LOGIN
+  document.getElementById('btnLogin').addEventListener('click', async function() {
+    const user = document.getElementById('loginUsername').value;
+    const pass = document.getElementById('loginPassword').value;
+    const btn = this;
+
+    if(!user || !pass) return alert("Harap isi Username dan Password!");
+
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+    btn.disabled = true;
+
+    try {
+        const res = await fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: user, password: pass })
+        });
+        const data = await res.json();
+
+        if(res.ok) {
+            localStorage.setItem('web_session', data.web_id); // Simpen web_id
+            window.location.href = '/dashboard.html';
+        } else {
+            alert(data.error || "Login Gagal! Periksa kembali Username dan Password.");
+        }
+    } catch(e) {
+        alert("Koneksi Error: " + e.message);
+    } finally {
+        btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk';
+        btn.disabled = false;
+    }
   });
 </script>
 
