@@ -1,54 +1,36 @@
-export const config = { api: { bodyParser: true } };
-
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
     if (req.method === "OPTIONS") return res.status(200).end();
-    if (req.method !== "POST") return res.status(405).end();
+    if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-    let d = req.body;
-    if (typeof d === "string") d = JSON.parse(d);
-
-    // Kita bersihin spasi gaib pake .trim()
-    const username = (d.username || "").trim();
-    const password = (d.password || "").trim();
-
-    if (!username || !password) {
-        return res.status(400).json({ error: "Isi dulu!" });
-    }
-
-    const SUPABASE_URL = "https://djradeolrbjmgoxxbdlj.supabase.co";
+    const SUPABASE_URL = "https://djradeolrbjmgoxxbdlj.supabase.co"; 
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqcmFkZW9scmJqbWdveHhiZGxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1OTA0NDQsImV4cCI6MjExMTE2NjQ0NH0.RvLrul0eFafGUcOn_9ORB8xh3IaP4n1FAsEmqXnrXCA";
 
     try {
-        // Kita Tembak Supabase pake ILIKE biar ga peduli huruf besar/kecil
-        const url = `${SUPABASE_URL}/rest/v1/web_config?admin_user=ilike.${encodeURIComponent(username)}&admin_pass=eq.${encodeURIComponent(password)}&select=*`;
-        
-        const response = await fetch(url, {
-            method: "GET",
-            headers: { 
-                "apikey": SUPABASE_KEY, 
-                "Authorization": `Bearer ${SUPABASE_KEY}`,
-                "Content-Type": "application/json"
-            }
-        });
+        const { username, password } = req.body;
+        if (!username || !password) return res.status(400).json({ error: "Username dan Password wajib diisi" });
 
+        // Cari user di tabel web_config berdasarkan admin_user dan admin_pass
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/web_config?admin_user=eq.${username}&admin_pass=eq.${password}&select=web_id,admin_user`, {
+            headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
+        });
+        
         const data = await response.json();
 
         if (data && data.length > 0) {
-            return res.status(200).json({ success: true, web_id: data[0].web_id });
-        } else {
-            // Kalo gagal, kita balikin data yang DIKIRIM sama ReqBin biar lu tau isinya apa
-            return res.status(401).json({ 
-                error: "Username / Password salah!",
-                debug_terima_user: username,
-                debug_terima_pass: password
+            // Kalo ketemu, kirim web_id-nya ke dashboard
+            return res.status(200).json({ 
+                success: true, 
+                web_id: data[0].web_id,
+                username: data[0].admin_user 
             });
+        } else {
+            return res.status(401).json({ error: "Username atau Password salah!" });
         }
-
-    } catch (err) {
-        return res.status(500).json({ error: "Server Error: " + err.message });
+    } catch (error) {
+        return res.status(500).json({ error: "Error server", message: error.message });
     }
 }
