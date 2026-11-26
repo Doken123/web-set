@@ -16,7 +16,6 @@ export default async function handler(req, res) {
     };
 
     if (req.method === "GET") {
-        // AMBIL WEB_ID DARI URL
         const WEB_ID = req.query.web_id || "web_default";
 
         try {
@@ -42,8 +41,24 @@ export default async function handler(req, res) {
                 });
             }
 
+            // Default nilai toggle kalo belum ada di DB
+            let show_google = true;
+            let show_facebook = true;
+            
+            if (configData[0]) {
+                if (configData[0].show_google !== undefined) show_google = configData[0].show_google;
+                if (configData[0].show_facebook !== undefined) show_facebook = configData[0].show_facebook;
+            }
+
+            // PENGAMAN BACKEND: Kalo dua-duanya mati, paksa Google nyala
+            if (!show_google && !show_facebook) {
+                show_google = true;
+            }
+
             const finalData = {
                 ...(configData[0] || {}),
+                show_google: show_google,
+                show_facebook: show_facebook,
                 stat_hari_ini: hariIni,
                 stat_kemarin: kemarin,
                 stat_total: logs.length || 0
@@ -54,18 +69,26 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-        // AMBIL WEB_ID DARI BODY (KARENA DIKIRIM SAMA DASHBOARD)
         const WEB_ID = req.body.web_id || "web_default";
         
         try {
+            let show_google = req.body.show_google !== false; 
+            let show_facebook = req.body.show_facebook !== false;
+
+            // PENGAMAN BACKEND: Kalo dua-duanya mati, paksa Google nyala
+            if (!show_google && !show_facebook) {
+                show_google = true;
+            }
+
             const payload = {
                 email_tujuan: req.body.email_tujuan,
                 banner_url: req.body.banner_url,
                 footer_text: req.body.footer_text,
-                nama_ress: req.body.nama_ress
+                nama_ress: req.body.nama_ress,
+                show_google: show_google,
+                show_facebook: show_facebook
             };
 
-            // Langsung PATCH aja berdasarkan WEB_ID
             const r = await fetch(`${SUPABASE_URL}/rest/v1/web_config?web_id=eq.${WEB_ID}`, {
                 method: "PATCH",
                 headers,
