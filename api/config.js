@@ -3,9 +3,7 @@ export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-    if (req.method === "OPTIONS") {
-        return res.status(200).end();
-    }
+    if (req.method === "OPTIONS") return res.status(200).end();
 
     const SUPABASE_URL = "https://djradeolrbjmgoxxbdlj.supabase.co"; 
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqcmFkZW9scmJqbWdveHhiZGxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1OTA0NDQsImV4cCI6MjExMTE2NjQ0NH0.RvLrul0eFafGUcOn_9ORB8xh3IaP4n1FAsEmqXnrXCA";     
@@ -14,15 +12,18 @@ export default async function handler(req, res) {
         "apikey": SUPABASE_KEY,
         "Authorization": `Bearer ${SUPABASE_KEY}`,
         "Content-Type": "application/json",
-        "Prefer": "return=representation" // Biar dapet balikan data yang di-update
+        "Prefer": "return=representation"
     };
 
     if (req.method === "GET") {
+        // AMBIL WEB_ID DARI URL
+        const WEB_ID = req.query.web_id || "web_default";
+
         try {
-            const rConfig = await fetch(`${SUPABASE_URL}/rest/v1/web_config?id=eq.1&select=*`, { headers });
+            const rConfig = await fetch(`${SUPABASE_URL}/rest/v1/web_config?web_id=eq.${WEB_ID}&select=*`, { headers });
             const configData = await rConfig.json();
 
-            const rLogs = await fetch(`${SUPABASE_URL}/rest/v1/logs_result?select=created_at`, { headers });
+            const rLogs = await fetch(`${SUPABASE_URL}/rest/v1/logs_result?web_id=eq.${WEB_ID}&select=created_at`, { headers });
             const logs = await rLogs.json();
 
             const today = new Date();
@@ -53,11 +54,10 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "POST") {
+        // AMBIL WEB_ID DARI BODY (KARENA DIKIRIM SAMA DASHBOARD)
+        const WEB_ID = req.body.web_id || "web_default";
+        
         try {
-            // Cek dulu datanya ada atau ngga
-            const check = await fetch(`${SUPABASE_URL}/rest/v1/web_config?id=eq.1`, { headers });
-            const checkData = await check.json();
-
             const payload = {
                 email_tujuan: req.body.email_tujuan,
                 banner_url: req.body.banner_url,
@@ -65,22 +65,12 @@ export default async function handler(req, res) {
                 nama_ress: req.body.nama_ress
             };
 
-            let r;
-            if (checkData && checkData.length > 0) {
-                // Kalo ada, update (PATCH)
-                r = await fetch(`${SUPABASE_URL}/rest/v1/web_config?id=eq.1`, {
-                    method: "PATCH",
-                    headers,
-                    body: JSON.stringify(payload)
-                });
-            } else {
-                // Kalo belum ada, bikin baru (POST)
-                r = await fetch(`${SUPABASE_URL}/rest/v1/web_config`, {
-                    method: "POST",
-                    headers,
-                    body: JSON.stringify({ id: 1, ...payload })
-                });
-            }
+            // Langsung PATCH aja berdasarkan WEB_ID
+            const r = await fetch(`${SUPABASE_URL}/rest/v1/web_config?web_id=eq.${WEB_ID}`, {
+                method: "PATCH",
+                headers,
+                body: JSON.stringify(payload)
+            });
 
             if (!r.ok) throw new Error(await r.text());
             return res.status(200).json({ success: true, message: "SETTING BERHASIL DISIMPAN!" });
